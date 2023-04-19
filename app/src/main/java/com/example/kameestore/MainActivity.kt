@@ -1,5 +1,6 @@
 package com.example.kameestore
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -15,7 +16,15 @@ class MainActivity : AppCompatActivity() {
         val signIn = findViewById<Button>(R.id.signIn)
         val createAccount = findViewById<Button>(R.id.createAccount)
 
-        createAccount.setOnContextClickListener {  }
+        signIn.setOnClickListener{
+            val usernameString = username.text.toString()
+            val passwordString = password.text.toString()
+        }
+
+        createAccount.setOnClickListener {
+            val intent = Intent(this, CreateAccountActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 }
