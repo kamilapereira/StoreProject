@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Kamee Store</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="signIn">Sign In</string>
+    <string name="createAccount">Create an Account</string>
+</resources>
