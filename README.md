@@ -1,4 +1,4 @@
-# Mobile Apps 1 Project
+# Mobile Apps - Store Project
 
 - Student Name: Kamila Pereira
 - Student ID: 25113
