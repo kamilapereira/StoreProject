@@ -9,12 +9,16 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.example.kameestore.models.Auth
+import com.example.kameestore.models.Token
+import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
     private val client = OkHttpClient()
+    private val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,14 +32,12 @@ class MainActivity : AppCompatActivity() {
         signIn.setOnClickListener{
             val usernameString = username.text.toString()
             val passwordString = password.text.toString()
-            val requestString = """{
-                    "username": "${usernameString}",
-                    "password": "${passwordString}"
-                    }""".trimMargin()
-            Log.i("MAIN_ACT", "Request Body: $requestString")
+            val auth = Auth(usernameString, passwordString)
+
+
             val request = Request.Builder()
                 .url("https://fakestoreapi.com/auth/login")
-                .post(requestString.toRequestBody())
+                .post(gson.toJson(auth).toRequestBody())
                 .header("Content-Type", "application/json")
                 .build()
 
@@ -47,7 +49,12 @@ class MainActivity : AppCompatActivity() {
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
                         val responseString = response.body?.string()
-                        Log.i("MAIN_ACT", "Success: $requestString")
+                        Log.i("MAIN_ACT", "Success $responseString")
+                        val tokenObject = gson.fromJson(responseString, Token::class.java)
+                        Log.i("MAIN_ACT", "Token ${tokenObject.token}")
+                        val intent = Intent(this@MainActivity, ProductCategoryActivity::class.java)
+                        startActivity(intent)
+
                     } else {
                         Handler(Looper.getMainLooper()).post{
                             Toast.makeText(this@MainActivity, "Unsuccessful ${response.code}", Toast.LENGTH_LONG).show()
