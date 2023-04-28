@@ -1,5 +1,6 @@
 package com.example.kameestore
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.example.kameestore.databinding.ActivityCreateAccountBinding
+import com.example.kameestore.databinding.ActivityMainBinding
 import com.example.kameestore.models.Auth
 import com.example.kameestore.models.Token
 import com.google.gson.Gson
@@ -17,25 +20,25 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private val client = OkHttpClient()
     private val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(this.layoutInflater)
+        setContentView(binding.root)
 
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
         val signIn = findViewById<Button>(R.id.signIn)
         val createAccount = findViewById<Button>(R.id.createAccount)
 
-        signIn.setOnClickListener{
+        binding.signIn.setOnClickListener{
             val usernameString = username.text.toString()
             val passwordString = password.text.toString()
             val auth = Auth(usernameString, passwordString)
-
-
-            val request = Request.Builder()
+            val request = getTokenAttachedRequestBuilder()
                 .url("https://fakestoreapi.com/auth/login")
                 .post(gson.toJson(auth).toRequestBody())
                 .header("Content-Type", "application/json")
@@ -65,11 +68,19 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        createAccount.setOnClickListener {
+        binding.createAccount.setOnClickListener {
             val intent = Intent(this, CreateAccountActivity::class.java)
             startActivity(intent)
         }
 
+    }
+
+    fun getTokenAttachedRequestBuilder(): Request.Builder {
+        val token =  "Your shared preferences code"
+        val requestBuilder = Request.Builder()
+        if (token != "")
+            return Request.Builder().header("Authorization", "Bearer $token")
+        else return requestBuilder
     }
 }
 
