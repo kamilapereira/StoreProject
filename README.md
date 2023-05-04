@@ -6,9 +6,9 @@
 
 ## Requirement Checklist
 
-- [ ] 1. Authentication
-  - [ ] 1.1. Allow User to Signup
-  - [ ] 1.2. Log In using username and password
+- [x] 1. Authentication
+  - [x] 1.1. Allow User to Signup
+  - [x] 1.2. Log In using username and password
   - [ ] 1.3. Store userID once logged in to keep the user logged in (even after restarting the app)
 - [ ] 2. Product Listing
   - [ ] 2.1. List Product Categories
