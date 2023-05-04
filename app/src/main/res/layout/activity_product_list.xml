@@ -48,7 +48,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerList"
+        android:id="@+id/recycler_pList"
         android:padding="8dp"
         android:layout_below="@+id/topPanel"
         android:layout_width="match_parent"

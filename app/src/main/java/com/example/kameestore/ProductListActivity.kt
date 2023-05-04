@@ -2,10 +2,16 @@ package com.example.kameestore
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.kameestore.adapter.MyProductAdapter
 import com.example.kameestore.listener.IProductLoadListener
 import com.example.kameestore.models.ProductModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 
 class ProductListActivity : AppCompatActivity(), IProductLoadListener {
@@ -19,9 +25,30 @@ class ProductListActivity : AppCompatActivity(), IProductLoadListener {
     }
 
     private fun loadProductFromFirebase() {
-        val productModel : MutableList<ProductModel> = ArrayList()
-        FirebaseCrashlytics.getInstance()
-            .toString("id")
+        val productModels : MutableList<ProductModel> = ArrayList()
+        FirebaseDatabase.getInstance()
+            .getReference("Product")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists())
+                    {
+                        for (productSnapshot in snapshot.children)
+                        {
+                            val productModel = productSnapshot.getValue(ProductModel::class.java)
+                            productModel!!.key = productSnapshot.key
+                            productModels.add(productModel)
+                        }
+                        productLoadListener.onProductLoadSuccess(productModels)
+                }
+                else
+                productLoadListener.onProductLoadFailed("Product doesn't exist")
+            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    productLoadListener.onProductLoadFailed(error.message)
+                }
+
+            })
 
     }
 
@@ -29,10 +56,13 @@ class ProductListActivity : AppCompatActivity(), IProductLoadListener {
         productLoadListener = this
     }
 
+
     override fun onProductLoadSuccess(productModeList: List<ProductModel>?) {
+        val adapter = MyProductAdapter(this,productModeList)
+        recycler_pList.adapter = adapter
     }
 
     override fun onProductLoadFailed(message: String?) {
-        Snackbar.make(,message,Snackbar.LENGTH_LONG).show()
+        Snackbar.make(mainLayout,message!!,Snackbar.LENGTH_LONG).show()
     }
 }
