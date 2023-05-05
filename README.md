@@ -33,3 +33,5 @@
 - [ ] 7. Bonus
   - [ ] 7.1. ViewPager2 with bottom TabLayout for: Shop, Cart, Orders, Profile icons
   - [ ] 7.2. Show a map fragment based on the GPS co-ordinates in the user profile
+
+# Unfinished project #
